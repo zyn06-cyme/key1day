@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trang chia sẻ key</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    .box {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+    textarea, input {
+      width: 100%;
+      margin: 8px 0;
+      padding: 8px;
+    }
+    button {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .btn {
+      background: #3498db;
+      color: white;
+    }
+    .btn-copy {
+      background: #2ecc71;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>📢 Key hôm nay</h2>
+    <div id="keyDisplay">Chưa có key nào.</div>
+    <button id="copyBtn" class="btn-copy" style="display:none;">Copy key</button>
+
+    <hr style="margin: 20px 0;">
+    <h3>Dành cho admin</h3>
+    <input type="password" id="adminPass" placeholder="Nhập mật khẩu admin" />
+    <textarea id="newKey" rows="4" placeholder="Nhập key mới..."></textarea>
+    <button id="saveBtn" class="btn">Lưu key</button>
+  </div>
+
+  <script>
+    const ADMIN_PASSWORD = "lap123"; // 🔒 bạn đổi lại mật khẩu ở đây
+    const keyDisplay = document.getElementById("keyDisplay");
+    const copyBtn = document.getElementById("copyBtn");
+
+    // Khi mở web -> hiện key từ localStorage
+    function showKey() {
+      const saved = localStorage.getItem("todayKey");
+      if (saved) {
+        keyDisplay.innerText = saved;
+        copyBtn.style.display = "inline-block";
+      } else {
+        keyDisplay.innerText = "Chưa có key nào.";
+        copyBtn.style.display = "none";
+      }
+    }
+    showKey();
+
+    // Copy key
+    copyBtn.onclick = () => {
+      const text = localStorage.getItem("todayKey");
+      navigator.clipboard.writeText(text);
+      alert("Đã copy key!");
+    };
+
+    // Lưu key mới (chỉ admin)
+    document.getElementById("saveBtn").onclick = () => {
+      const pass = document.getElementById("adminPass").value;
+      const newKey = document.getElementById("newKey").value.trim();
+
+      if (pass !== ADMIN_PASSWORD) {
+        alert("Sai mật khẩu!");
+        return;
+      }
+      if (!newKey) {
+        alert("Vui lòng nhập key!");
+        return;
+      }
+
+      localStorage.setItem("todayKey", newKey);
+      alert("Đã lưu key mới!");
+      showKey();
+      document.getElementById("newKey").value = "";
+    };
+  </script>
+</body>
+</html>
